@@ -1,4 +1,23 @@
 import os
+import sys
+
+# ========== 路径自适应（本地 + 云端通用）==========
+# 获取 app.py 所在目录作为基准
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_ROOT = BASE_DIR  # 数据文件夹和 app.py 同级
+
+# 如果 processed 文件夹不存在，尝试上级目录（兼容旧结构）
+if not os.path.exists(os.path.join(DATA_ROOT, 'processed')):
+    DATA_ROOT = os.environ.get('DATA_ROOT', r'D:\data')
+
+processed_dir = os.path.join(DATA_ROOT, 'processed')
+checkpoints_dir = os.path.join(DATA_ROOT, 'checkpoints')
+city_dir = os.path.join(DATA_ROOT, 'city')
+accidents_dir = os.path.join(DATA_ROOT, 'accidents')
+
+# =====================================================
+
+import os
 import numpy as np
 import pandas as pd
 import torch
@@ -11,17 +30,6 @@ from streamlit_folium import st_folium
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import os
-import sys
-
-# 路径自适应（本地 + 云端通用）
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_ROOT = BASE_DIR
-
-processed_dir = os.path.join(DATA_ROOT, 'processed')
-checkpoints_dir = os.path.join(DATA_ROOT, 'checkpoints')
-city_dir = os.path.join(DATA_ROOT, 'city')
-accidents_dir = os.path.join(DATA_ROOT, 'accidents')
 
 # ============================================================
 # 精算转换参数
@@ -202,7 +210,8 @@ class FullModel(nn.Module):
 
 @st.cache_resource
 def load_model():
-    DATA_ROOT = 'D:/data'
+    # 修复：使用全局 DATA_ROOT，不再硬编码
+    global DATA_ROOT
     processed_dir = os.path.join(DATA_ROOT, 'processed')
     checkpoint_dir = os.path.join(DATA_ROOT, 'checkpoints')
 
