@@ -11,6 +11,17 @@ from streamlit_folium import st_folium
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import os
+import sys
+
+# 路径自适应（本地 + 云端通用）
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_ROOT = BASE_DIR
+
+processed_dir = os.path.join(DATA_ROOT, 'processed')
+checkpoints_dir = os.path.join(DATA_ROOT, 'checkpoints')
+city_dir = os.path.join(DATA_ROOT, 'city')
+accidents_dir = os.path.join(DATA_ROOT, 'accidents')
 
 # ============================================================
 # 精算转换参数
